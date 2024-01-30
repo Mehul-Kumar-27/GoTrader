@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "/logs";
+
+message Stock{
+    string name = 1;
+    string price = 2;
+    string ticker = 3;
+    string exchange = 4;
+    int64 timestamp = 5;    
+}
+
+service StockService{
+    rpc GetStocks(ExchangeRequest) returns (stream Stock);
+}
+
+message ExchangeRequest{
+    string exchange = 1;
+}
