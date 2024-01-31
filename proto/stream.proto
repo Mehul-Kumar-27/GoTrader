@@ -1,6 +1,7 @@
+
 syntax = "proto3";
 
-option go_package = "/logs";
+option go_package = "/service";
 
 message Stock{
     string name = 1;
