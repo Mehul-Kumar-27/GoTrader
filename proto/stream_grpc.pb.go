@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: stream.proto
 
-package service
+package proto
 
 import (
 	context "context"
