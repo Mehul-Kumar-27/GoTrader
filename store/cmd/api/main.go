@@ -1,12 +1,35 @@
 package main
 
-import "gotrader/store/cmd/api/consumer"
+import (
+	lg "gotrader/logger"
+	pb "gotrader/proto"
+	"gotrader/store/cmd/api/stream"
 
-//// This consumer has mainly two functions provide the data to the store and also add the data to a postgres database
+	//"gotrader/store/cmd/api/consumer"
+	"log"
+	"net"
 
-// / First make a consumer to listen the specific topic and then add the data to the postgres database and
-// / then add the data to the store
+	"google.golang.org/grpc"
+)
+
+var logger *log.Logger
+
+func init() {
+	logger = lg.CreateCustomLogger("store/api")
+}
+
 func main() {
-	//Lets start the listining to the kafka topis
-	consumer.ConsumeMessages()
+	//consumer.ConsumeMessages()
+	list, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		logger.Panicf("Failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	st := stream.Stream{}
+	pb.RegisterStockServiceServer(grpcServer, &st)
+	logger.Println("Starting server on port :8080")
+
+	if err := grpcServer.Serve(list); err != nil {
+		logger.Panicf("Failed to serve: %v", err)
+	}
 }
