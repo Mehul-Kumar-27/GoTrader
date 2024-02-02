@@ -5,7 +5,7 @@ import (
 	pb "gotrader/proto"
 	"gotrader/store/cmd/api/stream"
 
-	//"gotrader/store/cmd/api/consumer"
+	"gotrader/store/cmd/api/consumer"
 	"log"
 	"net"
 
@@ -19,7 +19,7 @@ func init() {
 }
 
 func main() {
-	//consumer.ConsumeMessages()
+	consumer.ConsumeMessages()
 	list, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		logger.Panicf("Failed to listen: %v", err)

@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"context"
+	pb "gotrader/proto"
 	"gotrader/scraper/cmd/api/logger"
 	"log"
 
@@ -10,12 +11,15 @@ import (
 
 var reader *kafka.Reader
 var ConsumerLogger *log.Logger
+var nseChn chan *pb.Stock
 
 func init() {
 	reader, _ = NewKafkaReader([]string{"localhost:19092"}, "stock", 0)
 	ConsumerLogger = logger.CreateCustomLogger("consumer")
 	ConsumerLogger.Println("Consumer is initialized")
+
 }
+
 
 func NewKafkaReader(brokers []string, topic string, partition int) (*kafka.Reader, error) {
 	reader := kafka.NewReader(kafka.ReaderConfig{

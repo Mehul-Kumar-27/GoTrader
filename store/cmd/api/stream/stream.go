@@ -29,3 +29,7 @@ func (s *Stream) GetStocks(req *pb.ExchangeRequest, stream pb.StockService_GetSt
 	}
 	return nil
 }
+
+func SendTheStocksDataToBroker(client pb.StockServiceClient) {
+
+}
