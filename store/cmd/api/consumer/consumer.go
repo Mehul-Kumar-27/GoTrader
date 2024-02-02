@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"context"
+	"encoding/json"
 	pb "gotrader/proto"
 	"gotrader/scraper/cmd/api/logger"
 	"log"
@@ -11,7 +12,8 @@ import (
 
 var reader *kafka.Reader
 var ConsumerLogger *log.Logger
-var nseChn chan *pb.Stock
+var NseChn chan *pb.Stock
+var NseChannelInitialized bool = false
 
 func init() {
 	reader, _ = NewKafkaReader([]string{"localhost:19092"}, "stock", 0)
@@ -19,7 +21,6 @@ func init() {
 	ConsumerLogger.Println("Consumer is initialized")
 
 }
-
 
 func NewKafkaReader(brokers []string, topic string, partition int) (*kafka.Reader, error) {
 	reader := kafka.NewReader(kafka.ReaderConfig{
@@ -43,7 +44,31 @@ func ConsumeMessages() {
 			reader.Close()
 			ConsumerLogger.Fatalf("Error occurred while reading the message from the kafka %s", err)
 		} else {
+			var kafkaMessage KafkaMessage
+			err := json.Unmarshal(m.Value, &kafkaMessage)
+			if err != nil {
+				ConsumerLogger.Fatalf("Error occurred while unmarshalling the stock %s", err)
+			}
+			if NseChannelInitialized {
+				var stk = &pb.Stock{
+					Name:     kafkaMessage.StockName,
+					Ticker:   kafkaMessage.StockTicker,
+					Exchange: kafkaMessage.StockExchange,
+					Price:    kafkaMessage.StockPrice,
+				}
+				NseChn <- stk
+			}
+
 			ConsumerLogger.Printf("Recieved Stock from at the offset %d : %s", m.Offset, string(m.Value))
 		}
+	}
+}
+
+func SubscribleToNseChannel() {
+	if NseChn == nil {
+		NseChn = make(chan *pb.Stock)
+		NseChannelInitialized = true
+	} else {
+		ConsumerLogger.Println("NSE Channel is already initialized")
 	}
 }

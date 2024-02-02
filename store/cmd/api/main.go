@@ -19,7 +19,7 @@ func init() {
 }
 
 func main() {
-	consumer.ConsumeMessages()
+	go consumer.ConsumeMessages()
 	list, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		logger.Panicf("Failed to listen: %v", err)
