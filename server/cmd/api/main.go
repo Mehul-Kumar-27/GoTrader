@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gotrader/broker/cmd/api/listner"
+	"gotrader/server/cmd/api/listner"
 	logger "gotrader/logger"
 	pb "gotrader/proto"
 

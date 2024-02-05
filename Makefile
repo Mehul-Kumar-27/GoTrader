@@ -1,6 +1,6 @@
 SCRAPER_FILE=scraperApp
 STORE_FILE=storeApp
-BROKER_FILE=brokerApp
+BROKER_FILE=serverApp
 
 build_scraper:
 	@echo "Building scraper"
