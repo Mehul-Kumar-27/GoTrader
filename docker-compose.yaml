@@ -43,6 +43,35 @@ services:
     networks:
       - kafka-net
 
+  store:
+    build:
+      context: ./store
+      dockerfile: ./cmd/store.dockerfile
+    container_name: store
+    restart: always
+    depends_on:
+      - scraper
+      - broker
+    deploy:
+      replicas: 1
+      mode: replicated
+    networks:
+      - kafka-net
+
+  service:
+    build:
+      context: ./broker
+      dockerfile: ./cmd/broker.dockerfile
+    container_name: service
+    restart: always
+    depends_on:
+      - store
+    deploy:
+      replicas: 1
+      mode: replicated
+    networks:
+      - kafka-net
+
 networks:
   kafka-net:
     driver: bridge

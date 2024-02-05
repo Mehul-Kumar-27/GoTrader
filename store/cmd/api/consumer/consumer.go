@@ -16,7 +16,7 @@ var NseChn chan *pb.Stock
 var NseChannelInitialized bool = false
 
 func init() {
-	reader, _ = NewKafkaReader([]string{"localhost:19092"}, "stock", 0)
+	reader, _ = NewKafkaReader([]string{"broker:9092"}, "stock", 0)
 	ConsumerLogger = logger.CreateCustomLogger("consumer")
 	ConsumerLogger.Println("Consumer is initialized")
 

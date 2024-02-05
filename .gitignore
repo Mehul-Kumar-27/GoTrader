@@ -1,1 +1,3 @@
 scraper/scraperApp
+broker/cmd/brokerApp
+store/cmd/storeApp
