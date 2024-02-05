@@ -20,7 +20,7 @@ var writer *kafka.Writer
 var i int = 0
 
 func init() {
-	writer = CreateCustomWriter([]string{"localhost:19092"}, "stock")
+	writer = CreateCustomWriter([]string{"broker:9092"}, "stock")
 }
 
 func GetTheWriter() *kafka.Writer {

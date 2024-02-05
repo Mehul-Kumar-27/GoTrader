@@ -29,6 +29,20 @@ services:
     networks:
       - kafka-net
 
+  scraper:
+    build:
+      context: ./scraper
+      dockerfile: ./scraper.dockerfile
+    container_name: scraper
+    restart: always
+    depends_on:
+      - broker
+    deploy:
+      replicas: 1
+      mode: replicated
+    networks:
+      - kafka-net
+
 networks:
   kafka-net:
     driver: bridge
