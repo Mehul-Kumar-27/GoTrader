@@ -58,11 +58,13 @@ services:
     networks:
       - kafka-net
 
-  service:
+  server:
     build:
-      context: ./broker
-      dockerfile: ./cmd/broker.dockerfile
-    container_name: service
+      context: ./server
+      dockerfile: ./cmd/server.dockerfile
+    container_name: server
+    ports:
+      - "8080:8080"
     restart: always
     depends_on:
       - store

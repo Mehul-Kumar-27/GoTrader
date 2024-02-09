@@ -10,10 +10,10 @@ import (
 var logger *log.Logger
 
 func init() {
-	logger = lg.CreateCustomLogger("listner")
+	logger = lg.CreateCustomLogger("server/listner")
 }
 
-func GetStocksForNse(client pb.StockServiceClient) {
+func GetStocksForNse(client pb.StockServiceClient, stkChn chan *pb.Stock) {
 	stream, err := client.GetStocks(context.Background(), &pb.ExchangeRequest{Exchange: "NSE"})
 	if err != nil {
 		logger.Fatalf("Error getting stocks: %v", err)
@@ -24,7 +24,8 @@ func GetStocksForNse(client pb.StockServiceClient) {
 		if err != nil {
 			logger.Fatalf("Error receiving message: %v", err)
 		}
-		logger.Printf("Received stock: %v price: %v", message.Name, message.Price)
+		//logger.Printf("Received stock: %v price: %v", message.Name, message.Price)
+		stkChn <- message
 	}
 
 }

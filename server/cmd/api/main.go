@@ -1,22 +1,27 @@
 package main
 
 import (
-	"gotrader/server/cmd/api/listner"
-	logger "gotrader/logger"
-	pb "gotrader/proto"
+	"gotrader/logger"
+	"gotrader/server/cmd/api/socket"
+	"net/http"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	logger := logger.CreateCustomLogger("broker/api")
-	conn, err := grpc.Dial("store:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	logger := logger.CreateCustomLogger("server/api")
+
+	r := mux.NewRouter()
+	m := socket.NewManger()
+	r.HandleFunc("/api/stocks", m.InitalRoute).Methods("GET")
+	r.HandleFunc("/api/socket", socket.HandleWebSockerConnection)
+
+	server := http.Server{
+		Addr:    ":8080",
+		Handler: r,
+	}
+	err := server.ListenAndServe()
 	if err != nil {
 		logger.Panicf("Failed to listen: %v", err)
 	}
-	defer conn.Close()
-
-	client := pb.NewStockServiceClient(conn)
-	listner.GetStocksForNse(client)
 }
