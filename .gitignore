@@ -1,0 +1,3 @@
+store/cmd/storeApp
+server/cmd/serverApp
+scraper/cmd/scraperApp

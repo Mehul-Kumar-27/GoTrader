@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gotrader/broker/cmd/api/listner"
+	"gotrader/server/cmd/api/listner"
 	logger "gotrader/logger"
 	pb "gotrader/proto"
 
@@ -11,7 +11,7 @@ import (
 
 func main() {
 	logger := logger.CreateCustomLogger("broker/api")
-	conn, err := grpc.Dial("localhost:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("store:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		logger.Panicf("Failed to listen: %v", err)
 	}
