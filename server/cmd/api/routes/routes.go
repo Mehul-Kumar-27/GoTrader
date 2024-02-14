@@ -46,7 +46,6 @@ func (m *Manager) HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := NewWebsocketClient(conn, m)
-	m.AddClient(client)
 	conn.WriteJSON(jsonResponse{
 		Success: true,
 		Message: "Connected to server",

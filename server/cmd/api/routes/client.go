@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"encoding/json"
 	pb "gotrader/proto"
+
+	//	"sync"
 
 	"github.com/gorilla/websocket"
 )
@@ -16,7 +19,7 @@ type clientRequest struct {
 	Exchange string `json:"exchange,omitempty"`
 }
 
-type ClientList map[*ClientHandeller]bool
+type NseClientList map[*ClientHandeller]bool
 
 func NewWebsocketClient(conn *websocket.Conn, manager *Manager) *ClientHandeller {
 	return &ClientHandeller{
@@ -25,24 +28,20 @@ func NewWebsocketClient(conn *websocket.Conn, manager *Manager) *ClientHandeller
 	}
 }
 
-func (client *ClientHandeller) SubscribeToNseChan() {
-	client.nseChan = make(chan *pb.Stock)
-}
-
 func (client *ClientHandeller) SendToNseChan(stock *pb.Stock) {
 	client.nseChan <- stock
 }
 
 func (client *ClientHandeller) ReadMessages() {
 	for {
-		_, _, err := client.conn.ReadMessage()
+		_, msg, err := client.conn.ReadMessage()
 		if err != nil {
 			client.manager.RemoveClient(client)
 			break
 		}
 
 		var req clientRequest
-		err = client.conn.ReadJSON(&req)
+		err = json.Unmarshal(msg, &req)
 		if err != nil {
 			client.conn.WriteJSON(jsonResponse{
 				Success: false,
@@ -54,6 +53,21 @@ func (client *ClientHandeller) ReadMessages() {
 		}
 		if req.Exchange == "NSE" {
 			logger.Printf("Request recieved from %v, for exchange %v", client.conn.RemoteAddr(), req.Exchange)
+			client.manager.AddClient(client)
+			logger.Printf("Client added to the list %v", len(client.manager.ClientsList))
 		}
 	}
+}
+
+func (m *Manager) SendStocks(stk *pb.Stock) {
+	var i int = 1
+		if len(m.ClientsList) > 0 {
+			for client := range m.ClientsList {
+				stkBytes, _ := json.Marshal(stk)
+				client.conn.WriteMessage(websocket.TextMessage, stkBytes)
+				i++
+			}
+		}
+
+
 }
