@@ -30,7 +30,7 @@ services:
       - kafka-net
 
   scraper:
-    build: 
+    build:
       context: ./scraper/cmd
       dockerfile: scraper.dockerfile
     container_name: scraper
@@ -62,6 +62,8 @@ services:
       context: ./server/cmd
       dockerfile: server.dockerfile
     container_name: server
+    ports:
+      - 8080:8080
     depends_on:
       - store
     restart: always

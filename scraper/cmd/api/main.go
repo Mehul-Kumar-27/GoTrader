@@ -8,6 +8,7 @@ import (
 
 func main() {
 	logger := logger.CreateCustomLogger("main")
+	logger.Println("Starting the scraper")
 	for {
 		data.StartScraping()
 		logger.Println("Sleeping for 30 seconds")
