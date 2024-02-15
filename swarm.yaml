@@ -1,7 +1,8 @@
+version: "3"
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
-    container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -12,7 +13,6 @@ services:
 
   broker:
     image: confluentinc/cp-kafka:7.3.0
-    container_name: broker
     ports:
       - 19092:19092
     depends_on:
@@ -30,41 +30,56 @@ services:
       - kafka-net
 
   scraper:
-    build:
-      context: ./scraper/cmd
-      dockerfile: scraper.dockerfile
-    container_name: scraper
+    image: mehulkumar27/gotrader_scraper:23551c1
     depends_on:
       - broker
     restart: always
+    deploy:
+      replicas: 2
+      mode: replicated
+      update_config:
+        parallelism: 2
+        delay: 2s
+      restart_policy:
+        condition: on-failure
     networks:
       - kafka-net
 
   store:
-    build:
-      context: ./store/cmd
-      dockerfile: store.dockerfile
-    container_name: store
+    image: mehulkumar27/gotrader_store:23551c1
     depends_on:
       - scraper
     restart: always
+    deploy:
+      replicas: 2
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 2
+        delay: 2s
     networks:
       - kafka-net
 
   server:
-    build:
-     context: ./server/cmd
-      dockerfile: server.dockerfile
+    image: mehulkumar27/gotrader_server:23551c1
     container_name: server
     ports:
       - 8080:8080
     depends_on:
       - store
     restart: always
-
+    deploy:
+      replicas: 2
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 2
+        delay: 2s
     networks:
       - kafka-net
 
 networks:
   kafka-net:
-    driver: bridge
+    driver: overlay

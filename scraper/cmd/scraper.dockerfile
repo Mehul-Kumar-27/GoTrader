@@ -3,10 +3,8 @@ FROM golang:1.21.3
 
 RUN mkdir /app
 
-
 WORKDIR /app
 
-COPY serverApp .
+COPY scraperApp .
 
-CMD ["./serverApp"]
-
+CMD ["./scraperApp"]

@@ -4,9 +4,10 @@ FROM golang:1.21.3
 RUN mkdir /app
 WORKDIR /app
 
-COPY ./cmd/storeApp .
+COPY storeApp .
 
 CMD ["./storeApp"]
 
 
-## store/cmd/storeApp
+
+
