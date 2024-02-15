@@ -53,7 +53,7 @@ services:
 
   server:
     build:
-      context: ./server/cmd
+     context: ./server/cmd
       dockerfile: server.dockerfile
     container_name: server
     ports:
@@ -61,6 +61,7 @@ services:
     depends_on:
       - store
     restart: always
+
     networks:
       - kafka-net
 

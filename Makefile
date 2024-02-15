@@ -2,6 +2,7 @@ SCRAPER_FILE=scraperApp
 STORE_FILE=storeApp
 BROKER_FILE=serverApp
 
+
 TAG := $(shell git rev-parse --short HEAD)
 
 build_scraper:
@@ -15,6 +16,7 @@ build_store:
 build_server:
 	@echo "Building server"
 	cd ./server/cmd/api && env GOOS=linux CGO_ENABLED=0 go build -a -o ../${BROKER_FILE} .
+  
 up :
 	@echo "Starting up the containers"
 	docker-compose up 
@@ -56,3 +58,4 @@ image: build_scraper_image build_server_image build_store_image
 	docker push mehulkumar27/gotrader_scraper:${TAG}
 	docker push mehulkumar27/gotrader_server:${TAG}
 	docker push mehulkumar27/gotrader_store:${TAG}
+

@@ -7,3 +7,7 @@ WORKDIR /app
 COPY storeApp .
 
 CMD ["./storeApp"]
+
+
+
+
