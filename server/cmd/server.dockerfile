@@ -6,5 +6,5 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY serverApp .
-
+EXPOSE 8080
 CMD ["./serverApp"]

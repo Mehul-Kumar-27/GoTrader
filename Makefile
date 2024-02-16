@@ -51,6 +51,10 @@ build_store_image:
 	@echo "Building store image"
 	docker build -t mehulkumar27/gotrader_store:${TAG} -f ./store/cmd/store.dockerfile ./store/cmd
 
+server_image_push:
+	@echo "Pushing the server image"
+	docker push mehulkumar27/gotrader_server:${TAG}
+
 image: build_scraper_image build_server_image build_store_image
 	@echo "Pushing the images"
 	docker push mehulkumar27/gotrader_scraper:${TAG}
