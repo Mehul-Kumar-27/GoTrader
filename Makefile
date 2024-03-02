@@ -60,3 +60,7 @@ image: build_scraper_image build_server_image build_store_image
 	docker push mehulkumar27/gotrader_scraper:${TAG}
 	docker push mehulkumar27/gotrader_server:${TAG}
 	docker push mehulkumar27/gotrader_store:${TAG}
+
+swarm_down:
+	@echo "Removing the stack"
+	docker stack rm gotrader
